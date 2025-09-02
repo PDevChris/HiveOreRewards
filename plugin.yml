@@ -1,0 +1,7 @@
+name: HiveOreRewards
+main: HiveOreRewards\Main
+version: 1.0
+api: 5.0.0
+author: PDevChris
+commands: {}
+permissions: {}
