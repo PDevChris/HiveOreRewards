@@ -1,0 +1,106 @@
+<?php
+
+namespace HiveOreRewards;
+
+use pocketmine\plugin\PluginBase;
+use pocketmine\event\Listener;
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\player\Player;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\VanillaItems;
+use pocketmine\utils\Config;
+use pocketmine\entity\effect\EffectInstance;
+use pocketmine\entity\effect\VanillaEffects;
+
+class Main extends PluginBase implements Listener {
+
+    private Config $config;
+
+    public function onEnable(): void {
+        $this->saveDefaultConfig();
+        $this->config = $this->getConfig();
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getLogger()->info("HiveOreRewards sucessfully enabled!");
+    }
+
+    public function onBlockBreak(BlockBreakEvent $event): void {
+        $player = $event->getPlayer();
+        $block = $event->getBlock();
+
+        switch($block->getTypeId()){
+            case VanillaItems::REDSTONE_ORE()->getTypeId():
+                $this->giveRedstoneHeart($player);
+                break;
+
+            case VanillaItems::IRON_ORE()->getTypeId():
+                $this->giveCustomItem($player, $this->config->get("drops")["iron_ore"]);
+                break;
+
+            case VanillaItems::DIAMOND_ORE()->getTypeId():
+                $this->giveRandomItem($player, $this->config->get("drops")["diamond_ore"]);
+                break;
+
+            case VanillaItems::EMERALD_ORE()->getTypeId():
+                $this->giveRandomEnchantedArmor($player, $this->config->get("drops")["emerald_ore"]);
+                break;
+
+            case VanillaItems::GOLD_ORE()->getTypeId():
+                $this->giveCustomItems($player, $this->config->get("drops")["gold_ore"]);
+                break;
+        }
+    }
+    // To be updated
+    private function giveRedstoneHeart(Player $player): void {
+        $maxHearts = $this->config->get("redstone")["max_hearts"];
+        $durationSeconds = $this->config->get("redstone")["duration_seconds"];
+        $currentAbsorption = 0;
+
+        // Check current absorption hearts
+        foreach($player->getEffects()->all() as $effect){
+            if($effect->getTypeId() === VanillaEffects::ABSORPTION()->getTypeId()){
+                $currentAbsorption = $effect->getAmplifier() + 1;
+            }
+        }
+
+        if($currentAbsorption < $maxHearts){
+            $amplifier = $currentAbsorption; // Each amplifier = 2 yellow hearts
+            $durationTicks = $durationSeconds * 20; // Convert seconds to ticks
+
+            $effect = new EffectInstance(VanillaEffects::ABSORPTION(), $durationTicks, $amplifier, false);
+            $player->getEffects()->add($effect);
+        }
+    }
+
+    private function giveCustomItem(Player $player, string $itemName): void {
+        $item = ItemFactory::getInstance()->get($itemName);
+        $player->getInventory()->addItem($item);
+    }
+
+    private function giveCustomItems(Player $player, array $items): void {
+        foreach($items as $itemName){
+            $item = ItemFactory::getInstance()->get($itemName);
+            $player->getInventory()->addItem($item);
+        }
+    }
+
+    private function giveRandomItem(Player $player, array $items): void {
+        $itemName = $items[array_rand($items)];
+        $item = ItemFactory::getInstance()->get($itemName);
+        $player->getInventory()->addItem($item);
+    }
+
+    private function giveRandomEnchantedArmor(Player $player, array $items): void {
+        $itemName = $items[array_rand($items)];
+        [$id, $meta, $enchantName, $enchantLevel] = array_pad(explode(":", $itemName), 4, null);
+        $item = ItemFactory::getInstance()->get($id);
+
+        if($enchantName && $enchantLevel){
+            $enchantment = \pocketmine\item\enchantment\Enchantment::getEnchantmentByName($enchantName);
+            if($enchantment){
+                $item->addEnchantment(new \pocketmine\item\enchantment\EnchantmentInstance($enchantment, (int)$enchantLevel));
+            }
+        }
+
+        $player->getInventory()->addItem($item);
+    }
+}
