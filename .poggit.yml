@@ -1,9 +1,0 @@
-build-by-default: true
-branches:
-- PM5
-projects:
-  HiveOreRewards:
-    path: ""
-    icon: "icon.png"
-    lint:
-      phpstan: false
