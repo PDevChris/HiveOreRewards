@@ -130,6 +130,7 @@ enchantments:
 # 4. You can add new ores by copying the pattern under "ores" and adding a matching section in "enchantments" if you want enchanted drops.
 #
 # 5. PMDevChris hashtags are included as comments for reference
+```
 
 ### Installation
 
