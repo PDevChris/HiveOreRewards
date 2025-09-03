@@ -2,6 +2,8 @@
 
 Enhance your Minecraft server with custom ore rewards, random drops, enchantments, effects, and a heart system! This is useful for FFA Servers. Break ores to gain items, potion effects, or extra hearts all configurable through a simple YAML file. This is similar's to “Hive” mechanics in SkyWars. 
 
+![1750733594209](https://github.com/user-attachments/assets/f48f90ff-785c-4f3c-9287-b4532548099e)
+
 ### Features 
 
 * [X] Custom drops for ores: Players can get items or blocks when breaking ores.
