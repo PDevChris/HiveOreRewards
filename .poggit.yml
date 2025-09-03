@@ -1,0 +1,9 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/PDevChris/HiveOreRewards
+build-by-default: true
+icon: icon.png
+branches:
+- main
+projects:
+  HiveOreRewards:
+    path: ""
+...
