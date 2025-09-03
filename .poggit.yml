@@ -1,0 +1,9 @@
+build-by-default: true
+branches:
+- PM5
+projects:
+  MagicChest:
+    path: ""
+    icon: "icon.png"
+    lint:
+      phpstan: false
