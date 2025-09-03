@@ -2,7 +2,7 @@ build-by-default: true
 branches:
 - PM5
 projects:
-  MagicChest:
+  HiveOreRewards:
     path: ""
     icon: "icon.png"
     lint:
